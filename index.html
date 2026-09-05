@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="theme-color" content="#0d7377"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+  <link rel="icon" href="icon.svg" type="image/svg+xml"/>
+  <title>SYCAM-PUB</title>
+  <link rel="stylesheet" href="assets/css/sycam-v219-mobile-responsive.css"/>
+  <style>
+    html,body{margin:0;min-height:100%;background:#0b1220;color:#e2e8f0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+    #boot{padding:48px 20px;text-align:center;color:#94a3b8;font-size:14px}
+    #boot .err{color:#f87171;margin-top:12px;font-size:13px;white-space:pre-wrap;text-align:left}
+    #pg-mobilehome,#pg-plusmenu,#pg-news-v230,#pg-publish-v221,#pg-network-v222,
+    #pg-explorer-v220,#pg-mission,#pg-demo-v225,#pg-offline-v226,#pg-health-v231,
+    #pg-onboard-v229{box-sizing:border-box}
+  </style>
+</head>
+<body>
+  <div id="boot">Chargement SYCAM-PUB…</div>
+  <main id="app-main"></main>
+  <div id="toast"></div>
+
+  <script>
+  window.__sycamErrors = [];
+  window.onerror = function (msg, src, line) {
+    window.__sycamErrors.push(String(msg) + " @" + (src||"").split("/").pop() + ":" + line);
+  };
+  </script>
+  <script src="assets/js/sycam-core-minimal.js"></script>
+  <script src="assets/js/sycam-v232-hal-client.js"></script>
+  <script src="assets/js/sycam-v219-mobile-shell.js"></script>
+  <script src="assets/js/sycam-v220-live-feed-explorer.js"></script>
+  <script src="assets/js/sycam-v221-mobile-publish.js"></script>
+  <script src="assets/js/sycam-v222-mobile-network.js"></script>
+  <script src="assets/js/sycam-v223-stories-status.js"></script>
+  <script src="assets/js/sycam-v224-local-notifications.js"></script>
+  <script src="assets/js/sycam-v225-demo-walkthrough.js"></script>
+  <script src="assets/js/sycam-v226-offline-mode.js"></script>
+  <script src="assets/js/sycam-v227-pwa-register.js"></script>
+  <script src="assets/js/sycam-v228-plus-menu-hub.js"></script>
+  <script src="assets/js/sycam-v229-onboarding.js"></script>
+  <script src="assets/js/sycam-v230-home-shortcuts-news.js"></script>
+  <script src="assets/js/sycam-v231-health-qa.js"></script>
+  <script src="assets/js/sycam-v234-home-feed-challenges.js"></script>
+  <script src="assets/js/sycam-v235-explorer-pro.js"></script>
+  <script>
+  (function () {
+    var boot = document.getElementById("boot");
+    function showErr(msg) {
+      if (!boot) {
+        boot = document.createElement("div");
+        boot.id = "boot";
+        document.body.appendChild(boot);
+      }
+      boot.innerHTML = "SYCAM-PUB<br/><div class='err'></div>";
+      boot.querySelector(".err").textContent = msg;
+      boot.style.display = "block";
+    }
+    function start() {
+      try {
+        if (!window.SycamV219 || !SycamV219.openMobileHome) {
+          showErr("Module shell V219 manquant.\nVérifiez que le dossier assets/ est bien à côté de index.html\net que le serveur est lancé dans sycam-pub/.");
+          return;
+        }
+        // Toujours afficher l'accueil d'abord (évite écran noir)
+        SycamV219.ensureChrome && SycamV219.ensureChrome();
+        SycamV219.openMobileHome();
+        if (boot) boot.style.display = "none";
+        // Onboarding par-dessus si première visite
+        if (window.SycamV229 && SycamV229.isDone && !SycamV229.isDone()) {
+          setTimeout(function () {
+            try { SycamV229.openOnboarding(true, 0); } catch (e) {}
+          }, 300);
+        }
+        if (window.__sycamErrors && window.__sycamErrors.length) {
+          console.warn("SYCAM errors", window.__sycamErrors);
+        }
+      } catch (e) {
+        showErr(String(e && e.message ? e.message : e));
+        console.error(e);
+      }
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", start);
+    } else {
+      start();
+    }
+  })();
+  </script>
+</body>
+</html>

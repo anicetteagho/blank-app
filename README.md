@@ -1,19 +1,11 @@
-# 🎈 Blank app template
+# SYCAM-PUB v235 — Explorer pro
 
-A simple Streamlit app template for you to modify!
+Priorité architecture : profondeur derrière Explorer (pas refaire Accueil).
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://blank-app-template.streamlit.app/)
+```bash
+cd sycam-pub && python3 -m http.server 8000
+```
 
-### How to run it on your own machine
-
-1. Install the requirements
-
-   ```
-   $ pip install -r requirements.txt
-   ```
-
-2. Run the app
-
-   ```
-   $ streamlit run streamlit_app.py
-   ```
+```js
+SycamV235.openExplorer('Cameroun')
+```
